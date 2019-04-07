@@ -16,7 +16,6 @@
 
 @interface ViewController () <UITableViewDelegate, UITableViewDataSource>
 {
-    UITableView *tableView;
     NSArray *gitArray;
 }
 @end
@@ -26,22 +25,14 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    GitListQuery *listQuery = [GitListQuery new];
-    [listQuery gitGetList:^(NSArray * modelArray) {
-        NSLog(@"modelArray : %@",modelArray);
-        self->gitArray = modelArray;
-        dispatch_async(dispatch_get_main_queue(), ^{
-            [self->tableView reloadData];
-        });
-    }];
-    
-    tableView = [[UITableView alloc] initWithFrame:CGRectZero];
+    UITableView *tableView = [[UITableView alloc] initWithFrame:CGRectZero];
     tableView.delegate = self;
     tableView.dataSource = self;
     tableView.rowHeight = UITableViewAutomaticDimension;
     tableView.estimatedRowHeight = 600;
     [self.view addSubview:tableView];
     
+    //safe area for the tableview
     tableView.translatesAutoresizingMaskIntoConstraints = NO;
     UILayoutGuide * guide = self.view.safeAreaLayoutGuide;
     [tableView.leadingAnchor constraintEqualToAnchor:guide.leadingAnchor].active = YES;
@@ -50,6 +41,16 @@
     [tableView.bottomAnchor constraintEqualToAnchor:guide.bottomAnchor].active = YES;
 
     [self.view layoutIfNeeded];
+    
+    //Loading data Git Data
+    GitListQuery *listQuery = [GitListQuery new];
+    [listQuery gitGetList:^(NSArray * modelArray) {
+        NSLog(@"modelArray : %@",modelArray);
+        self->gitArray = modelArray;
+        dispatch_async(dispatch_get_main_queue(), ^{
+            [tableView reloadData];
+        });
+    }];
 }
 
 
@@ -72,7 +73,7 @@
     gitCell.gitStars.text = model.gitStars;
     
     gitCell.gitOwnerName.text = model.gitOwnerName;
-    [gitCell.gitOwnerAvatar setImageWithURL:[NSURL URLWithString:model.gitOwnerAvatar]];
+    [gitCell.gitOwnerAvatar setImageWithURL:[NSURL URLWithString:model.gitOwnerAvatar]]; //lazy loading for avatar pictures
     
     return gitCell;
 }

@@ -12,6 +12,12 @@ NS_ASSUME_NONNULL_BEGIN
 
 @interface GitListQuery : NSObject
 
+
+/**
+ async request for git JSON
+
+ @param compBlock compeltion block
+ */
 - (void)gitGetList:(void(^)(NSArray *))compBlock;
 
 @end

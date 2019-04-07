@@ -28,6 +28,7 @@
     [[NSOperationQueue mainQueue] addOperation:requestOperation];
 }
 
+//processing needed values for tableview
 - (NSArray *)processingJsonDic:(NSArray *)response
 {
     NSMutableArray *modelArray = [NSMutableArray new];
